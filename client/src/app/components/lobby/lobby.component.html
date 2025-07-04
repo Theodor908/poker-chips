@@ -1,0 +1,29 @@
+<div class="lobby-container">
+  <div class="lobby-box">
+    <h1>Poker Chip Manager</h1>
+    <p>Enter your name to get started</p>
+
+    <div class="input-group">
+      <input type="text" placeholder="Your Name" #nameInput>
+    </div>
+
+    <div class="button-group">
+      <button class="primary-button" (click)="createLobby(nameInput.value)">Create Lobby</button>
+    </div>
+
+    <div *ngIf="createdLobbyId" class="created-lobby-info">
+      <p>Lobby created! Share this ID to let others join:</p>
+      <div class="lobby-id-box">{{ createdLobbyId }}</div>
+    </div>
+
+    <hr>
+
+    <p>Or join an existing lobby</p>
+    <div class="input-group">
+      <input type="text" placeholder="Enter Lobby ID" #lobbyIdInput>
+    </div>
+    <div class="button-group">
+      <button class="secondary-button" (click)="joinLobby(nameInput.value, lobbyIdInput.value)">Join Lobby</button>
+    </div>
+  </div>
+</div>

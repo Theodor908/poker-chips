@@ -1,0 +1,21 @@
+.community-cards-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-placeholder {
+  width: 80px;
+  height: 120px;
+  background-color: #b0bec5;
+  border: 2px solid #546e7a;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #37474f;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}

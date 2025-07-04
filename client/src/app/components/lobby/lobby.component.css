@@ -1,0 +1,109 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+}
+
+.lobby-container {
+  text-align: center;
+  color: #f0f0f0;
+}
+
+.lobby-box {
+  background: #2c3e50;
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+p {
+  margin-bottom: 30px;
+  color: #bdc3c7;
+}
+
+.input-group {
+  margin-bottom: 30px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #34495e;
+  border-radius: 10px;
+  background-color: #34495e;
+  color: #f0f0f0;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]::placeholder {
+  color: #7f8c8d;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+}
+
+.primary-button, .secondary-button {
+  flex-grow: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #2980b9;
+}
+
+.secondary-button {
+  background-color: #7f8c8d;
+  color: white;
+}
+
+.secondary-button:hover {
+  background-color: #95a5a6;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #34495e;
+  margin: 30px 0;
+}
+
+.created-lobby-info {
+  margin-top: 20px;
+}
+
+.lobby-id-box {
+  background-color: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin: 10px 0 20px 0;
+  border: 2px dashed #34495e;
+}

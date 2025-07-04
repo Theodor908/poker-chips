@@ -1,0 +1,22 @@
+<div class="game-container">
+  <div class="header">
+    <button class="leave-lobby-button" (click)="leaveLobby()">Leave</button>
+  </div>
+
+  <div class="top-players" *ngIf="otherPlayers$ | async as otherPlayers">
+    <div class="player-info" *ngFor="let player of otherPlayers">
+      {{ player.name }}: ${{ player.chips }}
+    </div>
+  </div>
+
+  <div class="middle-area" *ngIf="gameState$ | async as gameState">
+    <app-community-cards [currentRound]="gameState.currentRound"></app-community-cards>
+    <app-pot-display></app-pot-display>
+  </div>
+
+  <div class="main-player-area" *ngIf="mainPlayer$ | async as mainPlayer">
+    <h2>{{ mainPlayer.name }}</h2>
+    <app-chip-stack></app-chip-stack>
+    <app-action-buttons></app-action-buttons>
+  </div>
+</div>

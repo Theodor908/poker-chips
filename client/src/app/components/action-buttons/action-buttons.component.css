@@ -1,0 +1,36 @@
+.action-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.action-button {
+  flex-grow: 1;
+  padding: 15px 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.action-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.action-button.call {
+  color: #2ecc71; /* Modern Green */
+}
+
+.action-button.check {
+  color: #3498db; /* Modern Blue */
+}
+
+.action-button.fold {
+  color: #e74c3c; /* Modern Red */
+}
