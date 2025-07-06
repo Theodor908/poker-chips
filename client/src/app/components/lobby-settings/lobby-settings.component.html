@@ -6,30 +6,30 @@
       <p>Configure the game for lobby: <strong>{{ lobbyId }}</strong></p>
 
       <div class="settings-form">
-        <div class="form-group">
-          <label for="starting-chips">Starting Chips</label>
-          <input #startingChipsInput type="number" id="starting-chips" [value]="startingChips$ | async" [disabled]="!(isHost$ | async)" (change)="onSettingsChange()">
-        </div>
-        <div class="form-group">
-          <label for="small-blind">Small Blind</label>
-          <input #smallBlindInput type="number" id="small-blind" [value]="smallBlind$ | async" [disabled]="!(isHost$ | async)" (change)="onSettingsChange()">
-        </div>
-        <div class="form-group">
-          <label for="big-blind">Big Blind</label>
-          <input #bigBlindInput type="number" id="big-blind" [value]="bigBlind$ | async" [disabled]="!(isHost$ | async)" (change)="onSettingsChange()">
-        </div>
+        <mat-form-field class="form-group">
+          <mat-label>Pot</mat-label>
+          <input matInput type="number" id="pot" (input)="updateSettings()" [(ngModel)]="pot" [disabled]="!isHost">
+        </mat-form-field>
+        <mat-form-field class="form-group">
+          <mat-label>Small Blind</mat-label>
+          <input matInput type="number" id="small-blind" (input)="updateSettings()" [(ngModel)]="smallBlind" [disabled]="!isHost">
+        </mat-form-field>
+        <mat-form-field class="form-group">
+          <mat-label>Big Blind</mat-label>
+          <input matInput type="number" id="big-blind" (input)="updateSettings()" [(ngModel)]="bigBlind" [disabled]="!isHost">
+        </mat-form-field>
       </div>
 
-      <div class="player-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!(isHost$ | async)">
+      <div class="player-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!isHost">
         <h2>Players in Lobby (Drag to Reorder)</h2>
         <ul>
-          <li *ngFor="let player of players$ | async" cdkDrag [cdkDragDisabled]="!(isHost$ | async)">
+          <li *ngFor="let player of players$ | async" cdkDrag [cdkDragDisabled]="!isHost">
             {{ player.name }}
           </li>
         </ul>
       </div>
 
-      <button class="primary-button start-game-button" (click)="startGame()" [disabled]="!(isHost$ | async)">Start Game</button>
+      <button class="primary-button start-game-button" (click)="startGame()" [disabled]="!isHost">Start Game</button>
     </div>
   </div>
 </div>

@@ -1,90 +1,90 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
-import { Player } from '../../interfaces/game';
+import { GameState, Player } from '../../interfaces/game';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'app-lobby-settings',
-  standalone: true,
-  imports: [CommonModule, DragDropModule],
-  templateUrl: './lobby-settings.component.html',
-  styleUrls: ['./lobby-settings.component.css']
+    selector: 'app-lobby-settings',
+    standalone: true,
+    imports: [CommonModule, DragDropModule, FormsModule, MatFormFieldModule, MatInputModule],
+    templateUrl: './lobby-settings.component.html',
+    styleUrls: ['./lobby-settings.component.css']
 })
-export class LobbySettingsComponent implements OnInit {
-  @ViewChild('startingChipsInput') startingChipsInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('smallBlindInput') smallBlindInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('bigBlindInput') bigBlindInput!: ElementRef<HTMLInputElement>;
+export class LobbySettingsComponent implements OnInit, OnChanges {
+    @Input() lobby: GameState | null = null;
 
-  lobbyId: string | null = null;
-  players$: Observable<Player[]>;
-  isHost$: Observable<boolean>;
-  startingChips$: Observable<number>;
-  smallBlind$: Observable<number>;
-  bigBlind$: Observable<number>;
+    pot: number = 0;
+    smallBlind: number = 0;
+    bigBlind: number = 0;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    public gameService: GameService
-  ) {
-    this.players$ = this.gameService.gameState$.pipe(map(state => state.players));
-    this.isHost$ = this.players$.pipe(
-      map(players => players.find(p => p.isMainPlayer)?.isHost === true)
-    );
-    this.startingChips$ = this.gameService.gameState$.pipe(map(state => state.players[0]?.chips ?? 1000));
-    this.smallBlind$ = this.gameService.gameState$.pipe(map(state => state.smallBlind));
-    this.bigBlind$ = this.gameService.gameState$.pipe(map(state => state.bigBlind));
-  }
+    lobbyId: string | null = null;
+    players$: Observable<Player[]>;
+    isHost: boolean = false;
+    startingChips$: Observable<number>;
+    smallBlind$: Observable<number>;
+    bigBlind$: Observable<number>;
 
-  ngOnInit(): void {
-    this.lobbyId = this.route.snapshot.paramMap.get('id');
-    const navigation = this.router.getCurrentNavigation();
-    const playerName = navigation?.extras.state?.['playerName'];
-
-    if (this.lobbyId && playerName) {
-      this.gameService.initializeLobby(this.lobbyId, playerName);
+    constructor(
+        private route: ActivatedRoute,
+        public gameService: GameService
+    ) {
+        const gameState$ = this.gameService.gameState$.pipe(filter(state => state !== null));
+        this.players$ = gameState$.pipe(map(state => state!.players));
+        this.startingChips$ = gameState$.pipe(map(state => state!.startingChips));
+        this.smallBlind$ = gameState$.pipe(map(state => state!.smallBlind));
+        this.bigBlind$ = gameState$.pipe(map(state => state!.bigBlind));
     }
-  }
 
-  drop(event: CdkDragDrop<Player[]>) {
-    this.players$.pipe(take(1)).subscribe(players => {
-      const newPlayerArray = [...players];
-      moveItemInArray(newPlayerArray, event.previousIndex, event.currentIndex);
-      if (this.lobbyId) {
-        this.gameService.updatePlayerOrder(this.lobbyId, newPlayerArray);
-      }
-    });
-  }
+    ngOnInit(): void {
+        this.lobbyId = this.route.snapshot.paramMap.get('id');
+        this.gameService.gameState$.subscribe(lobby => {
+            this.lobby = lobby;
+            this.updateHostStatus();
+        });
+    }
 
-  startGame(): void {
-    if (this.lobbyId) {
-      this.players$.pipe(take(1)).subscribe(players => {
-        const settings = {
-          StartingChips: parseInt(this.startingChipsInput.nativeElement.value, 10),
-          SmallBlind: parseInt(this.smallBlindInput.nativeElement.value, 10),
-          BigBlind: parseInt(this.bigBlindInput.nativeElement.value, 10),
-          Players: players
-        };
-        if (this.lobbyId) {
-          this.gameService.startGame(this.lobbyId, settings);
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['lobby']) {
+            this.updateHostStatus();
         }
-      });
     }
-  }
 
-  onSettingsChange(): void {
-    if (this.lobbyId) {
-      const settings = {
-        StartingChips: parseInt(this.startingChipsInput.nativeElement.value, 10),
-        SmallBlind: parseInt(this.smallBlindInput.nativeElement.value, 10),
-        BigBlind: parseInt(this.bigBlindInput.nativeElement.value, 10),
-        Players: [] // Not needed for live update
-      };
-      this.gameService.updateSettings(this.lobbyId, settings);
+    private updateHostStatus(): void {
+        this.isHost = this.lobby?.hostId === this.gameService.deviceId;
+        console.log('Host Check - Lobby Host ID:', this.lobby?.hostId);
+        console.log('Host Check - Local Device ID:', this.gameService.deviceId);
+        console.log('Host Check - Is Host?:', this.isHost);
     }
-  }
+
+    drop(event: CdkDragDrop<Player[]>) {
+        this.players$.subscribe(players => {
+            const newPlayerArray = [...players];
+            moveItemInArray(newPlayerArray, event.previousIndex, event.currentIndex);
+            if (this.lobbyId) {
+                this.gameService.updatePlayerOrder(this.lobbyId, newPlayerArray);
+            }
+        }).unsubscribe();
+    }
+
+    updateSettings(): void {
+        console.log(`Updating settings: Starting Chips: ${this.pot}, Small Blind: ${this.smallBlind}, Big Blind: ${this.bigBlind}`);
+
+        if (this.lobbyId) {
+            this.gameService.updateSettings(this.lobbyId, this.pot, this.smallBlind, this.bigBlind);
+        }
+    }
+
+    startGame(): void {
+        if (this.lobbyId) {
+            this.gameService.startGame(this.lobbyId, this.pot, this.smallBlind, this.bigBlind);
+        }
+    }
+
 }

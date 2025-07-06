@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-pot-display',
-  imports: [],
   templateUrl: './pot-display.component.html',
-  styleUrl: './pot-display.component.css'
+  styleUrls: ['./pot-display.component.css'],
+  standalone: true
 })
 export class PotDisplayComponent {
-
+  @Input() pot: number = 0;
 }

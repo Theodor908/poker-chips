@@ -3,7 +3,6 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,11 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250703162954_Init")]
-    partial class Init
+    partial class DataContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,13 +29,37 @@ namespace API.Migrations
                     b.Property<int>("BigBlind")
                         .HasColumnType("int");
 
+                    b.Property<int>("BigBlindIndex")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentBet")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentPlayerId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CurrentRound")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HostId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Pot")
+                        .HasColumnType("int");
+
                     b.Property<int>("SmallBlind")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SmallBlindIndex")
                         .HasColumnType("int");
 
                     b.Property<int>("StartingChips")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HostId");
 
                     b.ToTable("Lobbies");
                 });
@@ -51,7 +72,29 @@ namespace API.Migrations
                     b.Property<int>("Chips")
                         .HasColumnType("int");
 
+                    b.Property<int>("CurrentBet")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasActed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBigBlind")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsHost")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSmallBlind")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTurn")
                         .HasColumnType("bit");
 
                     b.Property<string>("LobbyId")
@@ -62,11 +105,28 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Pot")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LobbyId");
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("API.Entities.Lobby", b =>
+                {
+                    b.HasOne("API.Entities.Player", "Host")
+                        .WithMany()
+                        .HasForeignKey("HostId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Host");
                 });
 
             modelBuilder.Entity("API.Entities.Player", b =>

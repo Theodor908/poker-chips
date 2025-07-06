@@ -1,13 +1,13 @@
 using System.Collections.Generic;
+using API.Entities;
 
-namespace API.Entities
+namespace API.Dtos
 {
-    public class Lobby
+    public class LobbyDto
     {
         public string Id { get; set; } = string.Empty;
-        public List<Player> Players { get; set; } = [];
+        public List<PlayerDto> Players { get; set; } = [];
         public string HostId { get; set; } = string.Empty;
-        public Player Host { get; set; } = null!;
         public int StartingChips { get; set; }
         public int SmallBlind { get; set; }
         public int BigBlind { get; set; }

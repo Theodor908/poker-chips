@@ -2,4 +2,9 @@
   <button class="action-button call" (click)="onCall()">Call</button>
   <button class="action-button check" (click)="onCheck()">Check</button>
   <button class="action-button fold" (click)="onFold()">Fold</button>
+  <div class="raise-container">
+    <input type="range" min="0" max="1000" [(ngModel)]="raiseAmount">
+    <input type="number" [(ngModel)]="raiseAmount">
+    <button (click)="onRaise()">Raise</button>
+  </div>
 </div>

@@ -20,6 +20,13 @@ namespace API.Data
                 .HasMany(l => l.Players)
                 .WithOne(p => p.Lobby)
                 .HasForeignKey(p => p.LobbyId);
+
+            builder.Entity<Lobby>()
+                .HasOne(l => l.Host)
+                .WithMany()
+                .HasForeignKey(l => l.HostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

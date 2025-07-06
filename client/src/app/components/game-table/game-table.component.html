@@ -3,20 +3,35 @@
     <button class="leave-lobby-button" (click)="leaveLobby()">Leave</button>
   </div>
 
-  <div class="top-players" *ngIf="otherPlayers$ | async as otherPlayers">
-    <div class="player-info" *ngFor="let player of otherPlayers">
+  <div class="top-players" *ngIf="gameState$ | async as gameState">
+    <div class="player-info"
+         *ngFor="let player of gameState.players"
+         [ngClass]="{'active-player': player.isTurn}"
+         [class.small-blind]="player.isSmallBlind"
+         [class.big-blind]="player.isBigBlind">
       {{ player.name }}: ${{ player.chips }}
+      <div class="player-pot">Pot: ${{ player.pot }}</div>
+      <span *ngIf="player.isSmallBlind"> (SB)</span>
+      <span *ngIf="player.isBigBlind"> (BB)</span>
     </div>
   </div>
 
   <div class="middle-area" *ngIf="gameState$ | async as gameState">
-    <app-community-cards [currentRound]="gameState.currentRound"></app-community-cards>
-    <app-pot-display></app-pot-display>
+    <div class="game-info">
+      <span>Round: {{ gameState.currentRound }}</span>
+      <span>Pot: ${{ gameState.pot }}</span>
+    </div>
+    <app-community-cards [cards]="gameState.communityCards"></app-community-cards>
+    <app-pot-display [pot]="gameState.pot"></app-pot-display>
   </div>
 
-  <div class="main-player-area" *ngIf="mainPlayer$ | async as mainPlayer">
-    <h2>{{ mainPlayer.name }}</h2>
-    <app-chip-stack></app-chip-stack>
-    <app-action-buttons></app-action-buttons>
+  <div class="main-player-area" *ngIf="gameState$ | async as gameState">
+    <div *ngFor="let player of gameState.players">
+      <div *ngIf="player.isMainPlayer">
+        <h2>{{ player.name }}</h2>
+        <app-chip-stack></app-chip-stack>
+        <app-action-buttons></app-action-buttons>
+      </div>
+    </div>
   </div>
 </div>
